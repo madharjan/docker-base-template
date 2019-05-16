@@ -7,15 +7,16 @@ Docker container for Name Server based on [madharjan/docker-base](https://github
 
 ## Features
 
-* Environment variables to create database, user and set password
+* Environment variables to user and set password
 * Bats [bats-core/bats-core](https://github.com/bats-core/bats-core) based test cases
 
 ## Template Server 1.0 (docker-template)
 
+### Environment
+
 | Variable           | Default      | Example        |
 |--------------------|--------------|----------------|
 | DISABLE_TEMPLATE   | 0            | 1 (to disable) |
-| TEMPLATE_DATABASE  | test         | mydb           |
 | TEMPLATE_USERNAME  | user         | myuser         |
 | TEMPLATE_PASSWORD  | pass         | mypass         |
 
@@ -28,7 +29,7 @@ git clone https://github.com/madharjan/docker-template
 cd docker-template
 ```
 
-### Build Containers
+### Build Container
 
 ```bash
 # login to DockerHub
@@ -73,7 +74,6 @@ docker stop template
 docker rm template
 
 docker run -d \
-  -e TEMPLATE_DATABASE=mydb \
   -e TEMPLATE_USERNAME=myuser \
   -e TEMPLATE_PASSWORD=mypass \
   -p 1234:1234 \
@@ -105,7 +105,6 @@ ExecStartPre=-/usr/bin/docker rm template
 ExecStartPre=-/usr/bin/docker pull madharjan/docker-template:9.5
 
 ExecStart=/usr/bin/docker run \
-  -e TEMPLATE_DATABASE=mydb \
   -e TEMPLATE_USERNAME=myuser \
   -e TEMPLATE_PASSWORD=mypass \
   -p 1234:1234 \
@@ -125,23 +124,21 @@ WantedBy=multi-user.target
 
 | Variable                 | Default          | Example                                                          |
 |--------------------------|------------------|------------------------------------------------------------------|
-| PORT                     | 1234             | 8080                                                             |
+| PORT                     |                  | 8080                                                             |
 | VOLUME_HOME              | /opt/docker      | /opt/data                                                        |
-| VERSION                  | 1.0              | latest                                                           |
-| TEMPLATE_DATABASE        | postgres         | mydb                                                             |
-| TEMPLATE_USERNAME        | postgres         | user                                                             |
+| VERSION                  | 1.0              | latest                                                           |                                                           |
+| TEMPLATE_USERNAME        |                  | user                                                             |
 | TEMPLATE_PASSWORD        |                  | pass                                                             |
 
 ```bash
-docker run --rm -it \
-  -e PORT=1234 \
+docker run --rm \
+  -e PORT=8080 \
   -e VOLUME_HOME=/opt/docker \
-  -e VERSION=9.5 \
-  -e TEMPLATE_DATABASE=mydb \
+  -e VERSION=1.0 \
   -e TEMPLATE_USERNAME=user \
   -e TEMPLATE_PASSWORD=pass \
   madharjan/docker-template:1.0 \
-  /bin/sh -c "template-systemd-unit" | \
+  template-systemd-unit | \
   sudo tee /etc/systemd/system/template.service
 
 sudo systemctl enable template

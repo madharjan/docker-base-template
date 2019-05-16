@@ -6,20 +6,27 @@ if [ "${DEBUG}" = true ]; then
   set -x
 fi
 
-DEF_PORT=1234
-DEF_VOLUME_HOME=${VOLUME_HOME}
+DEF_PORT=
+DEF_VOLUME_HOME=/opt/docker
 DEF_VERSION=1.0
-DEF_TEMPLATE_DATABASE=temp
+DEF_NAME=template
+
 DEF_TEMPLATE_USERNAME=user
 DEF_TEMPLATE_PASSWORD=pass
 
 PORT=${PORT:-$DEF_PORT}
 VOLUME_HOME=${VOLUME_HOME:-$DEF_VOLUME_HOME}
 VERSION=${VERSION:-$DEF_VERSION}
+NAME=${NAME:-$DEF_NAME}
 
-TEMPLATE_DATABASE=${TEMPLATE_DATABASE:-$DEF_TEMPLATE_DATABASE}
 TEMPLATE_USERNAME=${TEMPLATE_USERNAME:-$DEF_TEMPLATE_USERNAME}
 TEMPLATE_PASSWORD=${TEMPLATE_PASSWORD:-$DEF_TEMPLATE_PASSWORD}
+
+if [ -z ${PORT} ]; then
+  PORT_LINE=""
+else 
+  PORT_LINE="-p ${PORT}:5432 "
+fi
 
 /bin/cat <<-EOF
 [Unit]
@@ -30,25 +37,23 @@ After=docker.service
 [Service]
 TimeoutStartSec=0
 
-ExecStartPre=-/bin/mkdir -p ${VOLUME_HOME}/template/etc
-ExecStartPre=-/bin/mkdir -p ${VOLUME_HOME}/template/lib
-ExecStartPre=-/bin/mkdir -p ${VOLUME_HOME}/template/log
-ExecStartPre=-/usr/bin/docker stop template
-ExecStartPre=-/usr/bin/docker rm template
-ExecStartPre=-/usr/bin/docker pull madharjan/docker-template:1.0
+ExecStartPre=-/bin/mkdir -p ${VOLUME_HOME}/${NAME}/etc
+ExecStartPre=-/bin/mkdir -p ${VOLUME_HOME}/${NAME}/lib
+ExecStartPre=-/bin/mkdir -p ${VOLUME_HOME}/${NAME}/log
+ExecStartPre=-/usr/bin/docker stop ${NAME}
+ExecStartPre=-/usr/bin/docker rm ${NAME}
+ExecStartPre=-/usr/bin/docker pull madharjan/docker-template:${VERSION}
 
 ExecStart=/usr/bin/docker run \\
-  -e TEMPLATE_DATABASE=${TEMPLATE_DATABASE} \\
   -e TEMPLATE_USERNAME=${TEMPLATE_USERNAME} \\
   -e TEMPLATE_PASSWORD=${TEMPLATE_PASSWORD} \\
-  -p ${PORT}:1234 \\
-  -v ${VOLUME_HOME}/template/etc:/etc/template/etc \\
-  -v ${VOLUME_HOME}/template/lib:/var/lib/template \\
-  -v ${VOLUME_HOME}/template/log:/var/log/template \\
-  --name template \\
-  madharjan/docker-template:1.0
+  ${PORT_LINE}-v ${VOLUME_HOME}/${NAME}/etc:/etc/template/etc \\
+  -v ${VOLUME_HOME}/${NAME}/lib:/var/lib/template \\
+  -v ${VOLUME_HOME}/${NAME}/log:/var/log/template \\
+  --name ${NAME} \\
+  madharjan/docker-template:${VERSION}
 
-ExecStop=/usr/bin/docker stop -t 2 template
+ExecStop=/usr/bin/docker stop -t 2 ${NAME}
 
 [Install]
 WantedBy=multi-user.target
