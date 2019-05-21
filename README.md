@@ -22,57 +22,37 @@ Docker container for Name Server based on [madharjan/docker-base](https://github
 
 ## Build
 
-### Clone this project
-
 ```bash
-git clone https://github.com/madharjan/docker-template
-cd docker-template
-```
-
-### Build Container
-
-```bash
-# login to DockerHub
-docker login
+# clone project
+git clone https://github.com/madharjan/docker-base-template
+cd docker-base-template
 
 # build
 make
 
 # tests
 make run
-make tests
+make test
+
+# clean
 make clean
-
-# tag
-make tag_latest
-
-# release
-make release
 ```
 
-### Tag and Commit to Git
+## Run
+
+**Note**: update environment variables below as necessary
 
 ```bash
-git tag 1.0
-git push origin 1.0
-```
-
-## Run Container
-
-### Prepare folder on host for container volumes
-
-```bash
+# prepare foldor on host for container volumes
 sudo mkdir -p /opt/docker/template/etc/
 sudo mkdir -p /opt/docker/template/lib/
 sudo mkdir -p /opt/docker/template/log/
-```
 
-### Run `docker-template`
-
-```bash
+# stop & remove previous instances
 docker stop template
 docker rm template
 
+# run container
 docker run -d \
   -e TEMPLATE_USERNAME=myuser \
   -e TEMPLATE_PASSWORD=mypass \
@@ -84,9 +64,9 @@ docker run -d \
   madharjan/docker-template:1.0
 ```
 
-## Run via Systemd
+## Systemd Unit File
 
-### Systemd Unit File - basic example
+**Note**: update environment variables below as necessary
 
 ```txt
 [Unit]
@@ -108,8 +88,8 @@ ExecStart=/usr/bin/docker run \
   -e TEMPLATE_USERNAME=myuser \
   -e TEMPLATE_PASSWORD=mypass \
   -p 1234:1234 \
-  -v /opt/docker/template/etc:/etc/template/etc/ \
-  -v /opt/docker/template/lib:/var/lib/template/ \
+  -v /opt/docker/template/etc:/etc/template \
+  -v /opt/docker/template/lib:/var/lib/template \
   -v /opt/docker/template/log:/var/log/template \
   --name template \
   madharjan/docker-template:1.0
@@ -120,21 +100,22 @@ ExecStop=/usr/bin/docker stop -t 2 template
 WantedBy=multi-user.target
 ```
 
-### Generate Systemd Unit File
+## Generate Systemd Unit File
 
 | Variable                 | Default          | Example                                                          |
 |--------------------------|------------------|------------------------------------------------------------------|
 | PORT                     |                  | 8080                                                             |
-| VOLUME_HOME              | /opt/docker      | /opt/data                                                        |
-| VERSION                  | 1.0              | latest                                                           |                                                           |
+| VOLUME_HOME              | /opt/docker      | /opt/data                                                        |                                                           |
+|                          |                  |                                                                  |
 | TEMPLATE_USERNAME        |                  | user                                                             |
 | TEMPLATE_PASSWORD        |                  | pass                                                             |
 
 ```bash
+# generate template.service
 docker run --rm \
   -e PORT=8080 \
   -e VOLUME_HOME=/opt/docker \
-  -e VERSION=1.0 \
+  -e NAME=template \
   -e TEMPLATE_USERNAME=user \
   -e TEMPLATE_PASSWORD=pass \
   madharjan/docker-template:1.0 \

@@ -13,7 +13,7 @@ ENV TEMPLATE_VERSION ${TEMPLATE_VERSION}
 RUN mkdir -p /build
 COPY . /build
 
-RUN /build/scripts/install.sh && /build/scripts/cleanup.sh
+RUN chmod 755 /build/scripts/*.sh && /build/scripts/install.sh && /build/scripts/cleanup.sh
 
 VOLUME ["/etc/template/data", "/var/log/template"]
 
