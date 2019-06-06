@@ -3,29 +3,29 @@
 [![Build Status](https://travis-ci.com/madharjan/docker-template.svg?branch=master)](https://travis-ci.com/madharjan/docker-template)
 [![Layers](https://images.microbadger.com/badges/image/madharjan/docker-template.svg)](http://microbadger.com/images/madharjan/docker-template)
 
-Docker container for Name Server based on [madharjan/docker-base](https://github.com/madharjan/docker-base/)
+Docker container for Template Server based on [madharjan/docker-base](https://github.com/madharjan/docker-template/)
 
 ## Features
 
-* Environment variables to user and set password
+* Environment variables to configure Template
 * Bats [bats-core/bats-core](https://github.com/bats-core/bats-core) based test cases
 
 ## Template Server 1.0 (docker-template)
 
 ### Environment
 
-| Variable           | Default      | Example        |
-|--------------------|--------------|----------------|
-| DISABLE_TEMPLATE   | 0            | 1 (to disable) |
-| TEMPLATE_USERNAME  | user         | myuser         |
-| TEMPLATE_PASSWORD  | pass         | mypass         |
+| Variable          | Default | Example        |
+| ----------------- | ------- | -------------- |
+| DISABLE_TEMPLATE  | 0       | 1 (to disable) |
+| TEMPLATE_USERNAME | user    | myuser         |
+| TEMPLATE_PASSWORD | pass    | mypass         |
 
 ## Build
 
 ```bash
 # clone project
-git clone https://github.com/madharjan/docker-base-template
-cd docker-base-template
+git clone https://github.com/madharjan/docker-template
+cd docker-template
 
 # build
 make
@@ -102,13 +102,14 @@ WantedBy=multi-user.target
 
 ## Generate Systemd Unit File
 
-| Variable                 | Default          | Example                                                          |
-|--------------------------|------------------|------------------------------------------------------------------|
-| PORT                     |                  | 8080                                                             |
-| VOLUME_HOME              | /opt/docker      | /opt/data                                                        |                                                           |
-|                          |                  |                                                                  |
-| TEMPLATE_USERNAME        |                  | user                                                             |
-| TEMPLATE_PASSWORD        |                  | pass                                                             |
+| Variable          | Default     | Example   |
+| ----------------- | ----------- | --------- |
+| NAME              | template    |           |
+| VOLUME_HOME       | /opt/docker | /opt/data |
+| PORT              |             | 8080      |
+|                   |             |           |
+| TEMPLATE_USERNAME |             | user      |
+| TEMPLATE_PASSWORD |             | pass      |
 
 ```bash
 # generate template.service

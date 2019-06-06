@@ -20,6 +20,8 @@ else
 endif
 
 build:
+	sed -i -e "s/VERSION=.*/VERSION=$(VERSION)/g" bin/template-systemd-unit
+	sed -i -e "s/TEMPLATE_VERSION=.*/TEMPLATE_VERSION=$(VERSION)/g" services/template/template.sh
 	docker build \
 		--build-arg TEMPLATE_VERSION=$(VERSION) \
 		--build-arg VCS_REF=`git rev-parse --short HEAD` \
@@ -44,13 +46,13 @@ run:
 
 	docker run -d \
 		-e DISABLE_TEMPLATE=1 \
-		-e DEBUG=${DEBUG} \
+		-e DEBUG=$(DEBUG) \
 		--name template_no_template $(NAME):$(VERSION)
 
 	sleep 2
 
 	docker run -d \
-		-e DEBUG=${DEBUG} \
+		-e DEBUG=$(DEBUG) \
 		--name template_default $(NAME):$(VERSION)
 
 	sleep 3

@@ -7,7 +7,8 @@ if [ "${DEBUG}" = true ]; then
   set -x
 fi
 
-NAME_BUILD_PATH=/build/services/name
+TEMPLATE_VERION=1.0
+TEMPLATE_BUILD_PATH=/build/services/name
 
 ## Install Template Server
 apt-get install -y --no-install-recommends template

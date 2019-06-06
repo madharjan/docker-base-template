@@ -1,5 +1,5 @@
 FROM madharjan/docker-base:16.04
-MAINTAINER Madhav Raj Maharjan <madhav.maharjan@gmail.com>
+LABEL maintainer="Madhav Raj Maharjan <madhav.maharjan@gmail.com>"
 
 ARG VCS_REF
 ARG TEMPLATE_VERSION
@@ -15,7 +15,7 @@ COPY . /build
 
 RUN chmod 755 /build/scripts/*.sh && /build/scripts/install.sh && /build/scripts/cleanup.sh
 
-VOLUME ["/etc/template/data", "/var/log/template"]
+VOLUME ["/etc/template", "/var/lib/template", "/var/log/template"]
 
 CMD ["/sbin/my_init"]
 
