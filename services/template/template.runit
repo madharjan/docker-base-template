@@ -2,6 +2,6 @@
 
 set -e
 
-DATA_DIR=${POSTGRESQL_DATA_DIR:-/var/lib/template}
+DATA_DIR=${DATA_DIR:-/var/lib/template}
 
 exec template ${DATA_DIR}

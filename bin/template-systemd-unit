@@ -6,31 +6,48 @@ if [ "${DEBUG}" = true ]; then
   set -x
 fi
 
-DEF_PORT=
-DEF_VOLUME_HOME=/opt/docker
-DEF_VERSION=1.0
+VERSION=1.0
+
 DEF_NAME=template
+DEF_VOLUME_HOME=/opt/docker
+
+NAME=${NAME:-$DEF_NAME}
+VOLUME_HOME=${VOLUME_HOME:-$DEF_VOLUME_HOME}
+PORT=${PORT:-}
+LINK_CONTAINERS=${LINK_CONTAINERS:-}
+
+
+
 
 DEF_TEMPLATE_USERNAME=user
 DEF_TEMPLATE_PASSWORD=pass
 
-PORT=${PORT:-$DEF_PORT}
-VOLUME_HOME=${VOLUME_HOME:-$DEF_VOLUME_HOME}
-VERSION=${VERSION:-$DEF_VERSION}
-NAME=${NAME:-$DEF_NAME}
+
 
 TEMPLATE_USERNAME=${TEMPLATE_USERNAME:-$DEF_TEMPLATE_USERNAME}
 TEMPLATE_PASSWORD=${TEMPLATE_PASSWORD:-$DEF_TEMPLATE_PASSWORD}
 
+if [ -z ${LINK_CONTAINERS} ]; then
+  LINK_LINE=""
+else 
+  OIFS=$IFS
+  IFS=','
+  for LINK in $LINK_CONTAINERS
+  do
+     LINK_LINE="${LINK_LINE} --link ${LINK} "
+  done
+  IFS=$OIFS
+fi
+
 if [ -z ${PORT} ]; then
   PORT_LINE=""
 else 
-  PORT_LINE="-p ${PORT}:5432 "
+  PORT_LINE="-p ${PORT}:1234 "
 fi
 
 /bin/cat <<-EOF
 [Unit]
-Description=Template SQL Server
+Description=Template Server
 
 After=docker.service
 
